@@ -1,6 +1,7 @@
 // connectivity 
 
 const MongoClient= require('mongodb').MongoClient;
+
 var url='mongodb://localhost:27017/TodoApp';
 MongoClient.connect(url,(err,client)=>{
 
@@ -40,8 +41,9 @@ MongoClient.connect(url,(err,client)=>{
         console.log(JSON.stringify(result.ops[0]._id.getTimestamp()));
     
 
-    });
+    }).catch((e)=>{console.log(e);});
 
     client.close();
 
+}).catch((e)=>{console.log(e);
 });

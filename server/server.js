@@ -1,91 +1,29 @@
-//Connectivity
+var express = require('express');
+var bodyParser = require('body-parser'); //body parser converts the json into object and attach thst object to request of post.
 
-const mongoose = require('mongoose');
+var {mongoose} = require('./db/mongoose');
+var {Todo} = require('./models/todo');
+var {User} = require('./models/user');
 
-var url='mongodb://localhost:27017/TodoApp';
+var app = express();
 
-mongoose.Promise = global.Promise;
-mongoose.connect(url);
+app.use(bodyParser.json());
 
-//Creation model
-/*
-var Todo = mongoose.model('Todo',{
+app.post('/todos', (req, res) => {
+  console.log(req.body);
+  var todo = new Todo({
+   text: req.body.text
+  });
 
-    text :{
-        //validations
-        type : String,
-        required : true,
-        minLength :1,
-        trim : true //removes whitespaces
-
-    },
-    completed :{
-        type : Boolean,
-        default : false // value is set to default if its not inserted
-    },
-    completedAt :{
-        type : Number,
-        default : null
-    }
-
-});
-*/
-
-var Users= mongoose.model('Users',{
-
-    email:{
-
-        type : String,
-        required : true,
-        minLength :1,
-        trim : true
-    }
-
-
+  todo.save().then((doc) => {
+    res.send(doc);
+         }, (e) => {
+    res.status(400).send(e);
+        }).catch((e)=>{
+          console.log(e);
+        });
 });
 
-var User1 = new Users({
-
-    email : "margaret.mj4@gmail.com "
+app.listen(3000, () => {
+  console.log('Started on port 3000');
 });
-User1.save().then((doc)=>{
-
-    console.log(JSON.stringify(doc,undefined,2));
-
-},(e)=>{
-
-    console.log("Unable to save user.");
-
-});
-/*
-var newTodo = new Todo({
-
-    text : "cooking dinner"
-
-});
-
-newTodo.save().then((doc)=>{
-
-    console.log("Saved Todo :",doc);
-},(e)=>{
-    console.log("Unable to save Todo.");
-});  //saving the data in db Todo
-
-
-var objTodo = Todo({
-
-    text : "jogging ",
-    completed : true,
-    completedAt : 20
-});
-
-objTodo.save().then((doc)=>{
-
-    console.log(JSON.stringify(doc, undefined, 2));
-
-},(e)=>{
-
-    console.log("Unable to save Todo.");
-
-});
-*/
